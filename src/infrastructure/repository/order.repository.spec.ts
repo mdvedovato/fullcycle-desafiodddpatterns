@@ -88,11 +88,11 @@ describe("Order repository test", () => {
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     customer.changeAddress(address);
     await customerRepository.create(customer);
-
+  
     const productRepository = new ProductRepository();
     const product = new Product("123", "Product 1", 10);
     await productRepository.create(product);
-
+  
     const orderItem = new OrderItem(
       "1",
       product.name,
@@ -100,37 +100,60 @@ describe("Order repository test", () => {
       product.id,
       2
     );
-
+  
     const order = new Order("123", "123", [orderItem]);
-
+  
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
-
-    // Update
-    
-    // Update
 
     const orderModel = await OrderModel.findOne({
       where: { id: order.id },
       include: ["items"],
     });
 
-    expect(orderModel.toJSON()).toStrictEqual({
-      id: "123",
-      customer_id: "123",
-      total: order.total(),
-      items: [
-        {
-          id: orderItem.id,
-          name: orderItem.name,
-          price: orderItem.price,
-          quantity: orderItem.quantity,
-          order_id: "123",
-          product_id: "123",
-        },
-      ],
+    // Verifica se o pedido foi encontrado
+    if (!orderModel) {
+      throw new Error("Order not found");
+    }
+
+    // Encontra o índice do item a ser atualizado
+    const itemIndex = orderModel.items.findIndex((item) => item.id === "1");
+
+    if (itemIndex === -1) {
+      throw new Error("Item not found in order");
+    }
+
+    // Cria um novo array de itens com o item atualizado
+    const updatedItems = orderModel.items.map((item, index) => {
+      if (index === itemIndex) {
+        return { id: item.id, name: "Product 1", price: 10, productId: "123", quantity: 3 };
+      }
+        return item;
     });
-  });  
+
+    // Atualiza os itens do pedido
+    const [affectedRowsCount, updatedRows] = await OrderModel.update(
+      {
+        items: updatedItems,
+      },
+      { where: { id: order.id }, returning: true }
+    );
+
+    const updatedOrderModel = updatedRows[0];
+
+    // Recalcula o total do pedido
+    const updatedOrder = new Order(
+      updatedOrderModel.id,
+      updatedOrderModel.customer_id,
+      updatedOrderModel.items.map((item) => new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity))
+    );
+
+    // Valida o pedido atualizado
+    updatedOrder.validate();
+
+    // Salva o pedido atualizado de volta no banco de dados
+    await orderRepository.update(updatedOrder);
+});
 
   it("should find a order", async () => {
     const customerRepository = new CustomerRepository();

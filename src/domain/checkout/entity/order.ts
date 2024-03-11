@@ -42,8 +42,9 @@ export default class Order {
 
     return true;
   }
-
+  
   total(): number {
     return this._items.reduce((acc, item) => acc + item.total(), 0);
   }
+
 }

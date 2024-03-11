@@ -60,4 +60,5 @@ export default class OrderRepository implements OrderRepositoryInterface {
         return new Order(orderModel.id, orderModel.customer_id, items);
     });
   }
+
 }
