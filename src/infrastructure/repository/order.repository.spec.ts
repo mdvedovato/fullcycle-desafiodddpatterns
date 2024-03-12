@@ -105,56 +105,45 @@ describe("Order repository test", () => {
   
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
-
-    const orderModel = await OrderModel.findOne({
-      where: { id: order.id },
-      include: ["items"],
-    });
-
-    // Verifica se o pedido foi encontrado
-    if (!orderModel) {
-      throw new Error("Order not found");
-    }
-
-    // Encontra o índice do item a ser atualizado
-    const itemIndex = orderModel.items.findIndex((item) => item.id === "1");
-
-    if (itemIndex === -1) {
-      throw new Error("Item not found in order");
-    }
-
-    // Cria um novo array de itens com o item atualizado
-    const updatedItems = orderModel.items.map((item, index) => {
-      if (index === itemIndex) {
-        return { id: item.id, name: "Product 1", price: 10, productId: "123", quantity: 3 };
-      }
-        return item;
-    });
-
-    // Atualiza os itens do pedido
-    const [affectedRowsCount, updatedRows] = await OrderModel.update(
-      {
-        items: updatedItems,
-      },
-      { where: { id: order.id }, returning: true }
+  
+    const newProduct = new Product("124", "Product 2", 20);
+    await productRepository.create(newProduct);
+  
+    const newOrderItem = new OrderItem(
+      "2",
+      newProduct.name,
+      newProduct.price,
+      newProduct.id,
+      3
     );
-
-    const updatedOrderModel = updatedRows[0];
-
-    // Recalcula o total do pedido
-    const updatedOrder = new Order(
-      updatedOrderModel.id,
-      updatedOrderModel.customer_id,
-      updatedOrderModel.items.map((item) => new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity))
+  
+    order.addItem(newOrderItem); // Adiciona o novo item ao pedido
+  
+    await orderRepository.update(order); // Atualiza o pedido no banco de dados
+  
+    const expectedOrders: Order[] = [
+      new Order("123", "123", [
+        new OrderItem("1", "Product 1", 10, "123", 2),
+        new OrderItem("2", "Product 2", 20, "124", 3)
+      ])
+    ];
+  
+    const isEqual = (order1: Order, order2: Order): boolean => {
+      // Implement your comparison logic here
+      // For example, compare order IDs
+      return order1.id === order2.id;
+    };
+  
+    let foundOrders = await orderRepository.findAll();
+  
+    // Verifica se cada elemento de expectedOrders está presente em foundOrders
+    const areOrdersEqual = expectedOrders.every((expectedOrder) =>
+      foundOrders.some((foundOrder) => isEqual(foundOrder, expectedOrder))
     );
-
-    // Valida o pedido atualizado
-    updatedOrder.validate();
-
-    // Salva o pedido atualizado de volta no banco de dados
-    await orderRepository.update(updatedOrder);
-});
-
+  
+    expect(areOrdersEqual).toBe(true);
+  });
+  
   it("should find a order", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");

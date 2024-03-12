@@ -43,8 +43,13 @@ export default class Order {
     return true;
   }
   
+  // Adiciona um novo item ao pedido
+  addItem(item: OrderItem) {
+    this.items.push(item);
+  }
+
   total(): number {
     return this._items.reduce((acc, item) => acc + item.total(), 0);
   }
-
+  
 }
