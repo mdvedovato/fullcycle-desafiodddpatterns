@@ -155,7 +155,7 @@ describe("Order repository test", () => {
       foundOrders.some((foundOrder) => isEqual(foundOrder, expectedOrder))
     );
   
-    expect(areOrdersEqual).toBe(true);
+    expect(areOrdersEqual).toBe(true);    
   });
 
   it("should find a order", async () => {
