@@ -48,8 +48,20 @@ export default class Order {
     this.items.push(item);
   }
 
-  total(): number {
-    return this._items.reduce((acc, item) => acc + item.total(), 0);
-  }
+  //total(): number {
+    //return this._items.reduce((acc, item) => acc + item.total(), 0);
+  //}
   
+  total() {
+    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      customer_id: this.customerId,
+      total: this.total(),
+      items: this.items.map(item => item.toJSON())
+    };
+  }
 }

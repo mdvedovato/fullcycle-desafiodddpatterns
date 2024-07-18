@@ -90,41 +90,55 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
   
     const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10);
-    await productRepository.create(product);
+    const product1 = new Product("123", "Product 1", 10);
+    await productRepository.create(product1);
   
-    const orderItem = new OrderItem(
+    const orderItem1 = new OrderItem(
       "1",
-      product.name,
-      product.price,
-      product.id,
+      product1.name,
+      product1.price,
+      product1.id,
       2
     );
   
-    const order = new Order("123", "123", [orderItem]);
+    const order = new Order("123", "123", [orderItem1]);
   
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
   
-    const newProduct = new Product("124", "Product 2", 20);
-    await productRepository.create(newProduct);
+    const product2 = new Product("124", "Product 2", 20);
+    await productRepository.create(product2);
   
-    const newOrderItem = new OrderItem(
+    const orderItem2 = new OrderItem(
       "2",
-      newProduct.name,
-      newProduct.price,
-      newProduct.id,
+      product2.name,
+      product2.price,
+      product2.id,
       3
     );
   
-    order.addItem(newOrderItem); // Adiciona o novo item ao pedido
+    order.addItem(orderItem2); // Adiciona o novo item ao pedido
+  
+    const product3 = new Product("125", "Product 3", 15);
+    await productRepository.create(product3);
+  
+    const orderItem3 = new OrderItem(
+      "3",
+      product3.name,
+      product3.price,
+      product3.id,
+      1
+    );
+  
+    order.addItem(orderItem3); // Adiciona mais um novo item ao pedido
   
     await orderRepository.update(order); // Atualiza o pedido no banco de dados
   
     const expectedOrders: Order[] = [
       new Order("123", "123", [
         new OrderItem("1", "Product 1", 10, "123", 2),
-        new OrderItem("2", "Product 2", 20, "124", 3)
+        new OrderItem("2", "Product 2", 20, "124", 3),
+        new OrderItem("3", "Product 3", 15, "125", 1)
       ])
     ];
   
@@ -143,7 +157,7 @@ describe("Order repository test", () => {
   
     expect(areOrdersEqual).toBe(true);
   });
-  
+
   it("should find a order", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
@@ -239,6 +253,5 @@ describe("Order repository test", () => {
 
     expect(orders).toEqual(foundOrders);        
 
-  });
-  
+  });  
 });

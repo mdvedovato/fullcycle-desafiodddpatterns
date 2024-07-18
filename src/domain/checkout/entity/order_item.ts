@@ -44,5 +44,14 @@ export default class OrderItem {
   total(): number {
     return this._price * this._quantity
   }
-  
+
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      price: this.price,
+      quantity: this.quantity,
+      product_id: this.productId
+    };
+  }  
 }
