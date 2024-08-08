@@ -1,9 +1,9 @@
 import Address from "../value-object/address";
 import Customer from "./customer";
-import EventDispatcher from "../../event/event-dispatcher";
-import CustomerCreatedEvent from "../../event/customer-created.event";
-import EnviaConsoleLog1Handler from "../../event/handler/envia-console-log1.handler";
-import EnviaConsoleLog2Handler from "../../event/handler/envia-console-log2.handler";
+import EventDispatcher from "../event/event-dispatcher";
+import CustomerCreatedEvent from "../event/customer-created.event";
+import EnviaConsoleLog1Handler from "../event/handler/envia-console-log1.handler";
+import EnviaConsoleLog2Handler from "../event/handler/envia-console-log2.handler";
 
 describe("Customer unit tests", () => {
   it("should throw error when id is empty", () => {

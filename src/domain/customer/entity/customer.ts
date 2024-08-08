@@ -1,8 +1,8 @@
 import Address from "../value-object/address";
-import CustomerCreatedEvent from "../../event/customer-created.event";
-import EventDispatcher from "../../event/event-dispatcher";
-import EnviaConsoleLog1Handler from "../../event/handler/envia-console-log1.handler";
-import EnviaConsoleLog2Handler from "../../event/handler/envia-console-log2.handler";
+import CustomerCreatedEvent from "../event/customer-created.event";
+import EventDispatcher from "../event/event-dispatcher";
+import EnviaConsoleLog1Handler from "../event/handler/envia-console-log1.handler";
+import EnviaConsoleLog2Handler from "../event/handler/envia-console-log2.handler";
 
 export default class Customer {
   private _id: string;
