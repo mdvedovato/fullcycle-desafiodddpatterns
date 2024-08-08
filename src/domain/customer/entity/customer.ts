@@ -1,4 +1,8 @@
 import Address from "../value-object/address";
+import CustomerCreatedEvent from "../../event/customer-created.event";
+import EventDispatcher from "../../event/event-dispatcher";
+import EnviaConsoleLog1Handler from "../../event/handler/envia-console-log1.handler";
+import EnviaConsoleLog2Handler from "../../event/handler/envia-console-log2.handler";
 
 export default class Customer {
   private _id: string;
@@ -6,11 +10,15 @@ export default class Customer {
   private _address!: Address;
   private _active: boolean = false;
   private _rewardPoints: number = 0;
+  //private eventDispatcher = new EventDispatcher();
+  private eventDispatcher: EventDispatcher;
 
-  constructor(id: string, name: string) {
+  constructor(id: string, name: string, eventDispatcher?: EventDispatcher) {
     this._id = id;
     this._name = name;
+    this.eventDispatcher = eventDispatcher || new EventDispatcher();
     this.validate();
+    this.dispatchCustomerCreatedEvent();
   }
 
   get id(): string {
@@ -69,4 +77,9 @@ export default class Customer {
   set Address(address: Address) {
     this._address = address;
   }
+
+  private dispatchCustomerCreatedEvent() {
+    const event = new CustomerCreatedEvent(this._id, this._name);
+    this.eventDispatcher.notify(event);
+  }  
 }
