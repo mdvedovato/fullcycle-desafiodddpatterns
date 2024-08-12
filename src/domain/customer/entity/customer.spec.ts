@@ -65,25 +65,23 @@ describe("Customer unit tests", () => {
     expect(customer.rewardPoints).toBe(20);
   });
 
-//  describe("Customer unit tests with events", () => {
-    it("should dispatch CustomerCreatedEvent when a new customer is created", () => {
-      const eventDispatcher = new EventDispatcher();
-      const handler1 = new EnviaConsoleLog1Handler();
-      const handler2 = new EnviaConsoleLog2Handler();
-  
-      const spyHandler1 = jest.spyOn(handler1, "handle");
-      const spyHandler2 = jest.spyOn(handler2, "handle");
-  
-      eventDispatcher.register("CustomerCreatedEvent", handler1);
-      eventDispatcher.register("CustomerCreatedEvent", handler2);
-  
-      // Act
-      const customer = new Customer("1", "Customer 1", eventDispatcher);
-  
-      // Assert
-      expect(spyHandler1).toHaveBeenCalled();
-      expect(spyHandler2).toHaveBeenCalled();
-    });  
-//  });
+  it("should dispatch CustomerCreatedEvent when a new customer is created", () => {
+    const eventDispatcher = new EventDispatcher();
+    const handler1 = new EnviaConsoleLog1Handler();
+    const handler2 = new EnviaConsoleLog2Handler();
+
+    const spyHandler1 = jest.spyOn(handler1, "handle");
+    const spyHandler2 = jest.spyOn(handler2, "handle");
+
+    eventDispatcher.register("CustomerCreatedEvent", handler1);
+    eventDispatcher.register("CustomerCreatedEvent", handler2);
+
+    // Act
+    const customer = new Customer("1", "Customer 1", eventDispatcher);
+
+    // Assert
+    expect(spyHandler1).toHaveBeenCalled();
+    expect(spyHandler2).toHaveBeenCalled();
+  });  
 });
 
