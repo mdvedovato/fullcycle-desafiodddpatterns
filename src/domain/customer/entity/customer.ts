@@ -3,7 +3,7 @@ import CustomerCreatedEvent from "../event/customer-created.event";
 import EventDispatcher from "../event/event-dispatcher";
 import EnviaConsoleLog1Handler from "../event/handler/envia-console-log1.handler";
 import EnviaConsoleLog2Handler from "../event/handler/envia-console-log2.handler";
-//import CustomerAddressChangedEvent from "../event/customer-address-changed.event";
+import CustomerAddressChangedEvent from "../../event/customer-address-changed.event";
 
 export default class Customer {
   private _id: string;
@@ -54,7 +54,7 @@ export default class Customer {
   changeAddress(address: Address) {
     this._address = address;
     const addressString = `${address.street}, ${address.number}, ${address.zip}, ${address.city}`;
-//    this.dispatchCustomerAddressChangedEvent(addressString);
+    this.dispatchCustomerAddressChangedEvent(addressString);
   }
 
   isActive(): boolean {
@@ -85,8 +85,8 @@ export default class Customer {
     this.eventDispatcher.notify(event);
   }  
 
-//  private dispatchCustomerAddressChangedEvent(address: string) {
-//    const event = new CustomerAddressChangedEvent(this._id, this._name, address);
-//    this.eventDispatcher.notify(event);
-//  }  
+  private dispatchCustomerAddressChangedEvent(address: string) {
+    const event = new CustomerAddressChangedEvent(this._id, this._name, address);
+    this.eventDispatcher.notify(event);
+  }  
 }

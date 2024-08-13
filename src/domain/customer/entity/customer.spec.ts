@@ -4,6 +4,7 @@ import EventDispatcher from "../event/event-dispatcher";
 import CustomerCreatedEvent from "../event/customer-created.event";
 import EnviaConsoleLog1Handler from "../event/handler/envia-console-log1.handler";
 import EnviaConsoleLog2Handler from "../event/handler/envia-console-log2.handler";
+import EnviaConsoleLogHandler from "../../event/handler/envia-console-log.handler";
 
 describe("Customer unit tests", () => {
   it("should throw error when id is empty", () => {
@@ -82,6 +83,30 @@ describe("Customer unit tests", () => {
     // Assert
     expect(spyHandler1).toHaveBeenCalled();
     expect(spyHandler2).toHaveBeenCalled();
+  });  
+
+  it("should dispatch CustomerAddressChangedEvent when address is changed", () => {
+    const eventDispatcher = new EventDispatcher();
+    const handler = new EnviaConsoleLogHandler();
+
+    const spyHandler = jest.spyOn(handler, "handle");
+
+    eventDispatcher.register("CustomerAddressChangedEvent", handler);
+
+    const customer = new Customer("1", "Customer 1", eventDispatcher);
+    const address = new Address("Street 1", 123, "13330-250", "São Paulo");
+
+    // Act
+    customer.changeAddress(address);
+
+    // Assert
+    expect(spyHandler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customerId: "1",
+        customerName: "Customer 1",
+        address: "Street 1, 123, 13330-250, São Paulo",
+      })
+    );
   });  
 });
 
