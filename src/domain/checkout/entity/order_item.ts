@@ -18,7 +18,7 @@ export default class OrderItem {
     this._price = price;
     this._productId = productId;
     this._quantity = quantity;
-    this._total = this.total;
+    this._total = this.total();
   }
 
   get id(): string {
@@ -41,17 +41,7 @@ export default class OrderItem {
     return this._price;
   }
 
-  get total(): number {
+  total(): number {
     return this._price * this._quantity
   }
-
-  toJSON() {
-    return {
-      id: this.id,
-      name: this.name,
-      price: this.price,
-      quantity: this.quantity,
-      product_id: this.productId
-    };
-  }  
 }

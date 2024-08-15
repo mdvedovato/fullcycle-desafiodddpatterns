@@ -1,9 +1,4 @@
 import Address from "../value-object/address";
-import CustomerCreatedEvent from "../event/customer-created.event";
-import EventDispatcher from "../event/event-dispatcher";
-import EnviaConsoleLog1Handler from "../event/handler/envia-console-log1.handler";
-import EnviaConsoleLog2Handler from "../event/handler/envia-console-log2.handler";
-import CustomerAddressChangedEvent from "../../event/customer-address-changed.event";
 
 export default class Customer {
   private _id: string;
@@ -11,14 +6,11 @@ export default class Customer {
   private _address!: Address;
   private _active: boolean = false;
   private _rewardPoints: number = 0;
-  private eventDispatcher: EventDispatcher;
 
-  constructor(id: string, name: string, eventDispatcher?: EventDispatcher) {
+  constructor(id: string, name: string) {
     this._id = id;
     this._name = name;
-    this.eventDispatcher = eventDispatcher || new EventDispatcher();
     this.validate();
-    this.dispatchCustomerCreatedEvent();
   }
 
   get id(): string {
@@ -53,8 +45,6 @@ export default class Customer {
   
   changeAddress(address: Address) {
     this._address = address;
-    const addressString = `${address.street}, ${address.number}, ${address.zip}, ${address.city}`;
-    this.dispatchCustomerAddressChangedEvent(addressString);
   }
 
   isActive(): boolean {
@@ -79,14 +69,4 @@ export default class Customer {
   set Address(address: Address) {
     this._address = address;
   }
-
-  private dispatchCustomerCreatedEvent() {
-    const event = new CustomerCreatedEvent(this._id, this._name);
-    this.eventDispatcher.notify(event);
-  }  
-
-  private dispatchCustomerAddressChangedEvent(address: string) {
-    const event = new CustomerAddressChangedEvent(this._id, this._name, address);
-    this.eventDispatcher.notify(event);
-  }  
 }

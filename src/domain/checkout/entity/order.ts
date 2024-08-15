@@ -42,26 +42,8 @@ export default class Order {
 
     return true;
   }
-  
-  // Adiciona um novo item ao pedido
-  addItem(item: OrderItem) {
-    this.items.push(item);
-  }
 
-  //total(): number {
-    //return this._items.reduce((acc, item) => acc + item.total(), 0);
-  //}
-  
-  total() {
-    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      customer_id: this.customerId,
-      total: this.total(),
-      items: this.items.map(item => item.toJSON())
-    };
+  total(): number {
+    return this._items.reduce((acc, item) => acc + item.total(), 0);
   }
 }
